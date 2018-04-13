@@ -1,4 +1,4 @@
-package org.snailxr.SnailxrMysqlProxy.backend.nio;
+package org.snailxr.snailxrproxy.backend.nio;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -49,12 +50,39 @@ public class NioClient {
             SocketChannel client = (SocketChannel) key.channel();
             if (client.isConnectionPending()) {
                 client.finishConnect();
-                client.register(selector, SelectionKey.OP_WRITE);
+                client.register(selector, SelectionKey.OP_READ);
             }
         } else if (key.isReadable()) {
+            SocketChannel client= (SocketChannel) key.channel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(100);
+            int count =client.read(byteBuffer);
+            byteBuffer.flip();
+           // String s=new String(byteBuffer.array(),byteBuffer.position(),byteBuffer.limit());
+            byte[] fixIntByte=new byte[3];
+            byteBuffer.get(fixIntByte,0,3);
+            int paylodLength=0;
+            for (int i=fixIntByte.length-1;i>0;i--){
+                paylodLength|=fixIntByte[i]&0xFF;
+                paylodLength=paylodLength<<8;
 
+            }
+            paylodLength|=fixIntByte[0]&0xFF;
+
+            System.out.println(paylodLength);
+            int sequenceId=0;
+            byte[] sequenceIdByte=new byte[1];
+            byteBuffer.get(sequenceIdByte,0,1);
+            sequenceId|=sequenceIdByte[0]&0xFF;
+            System.out.println(sequenceId);
+            System.out.println(Arrays.toString(fixIntByte));
+            System.out.println(Arrays.toString(byteBuffer.array()));
         } else if (key.isWritable()) {
 
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        NioClient client=new NioClient("localhost",3306);
+        client.connect();
     }
 }

@@ -1,4 +1,4 @@
-package org.snailxr.SnailxrMysqlProxy;
+package org.snailxr.snailxrproxy;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
