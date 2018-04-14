@@ -1,5 +1,7 @@
 package org.snailxr.snailxrproxy.backend.nio;
 
+import org.snailxr.snailxrproxy.protocol.HandShake;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -75,7 +77,13 @@ public class NioClient {
             sequenceId|=sequenceIdByte[0]&0xFF;
             System.out.println(sequenceId);
             System.out.println(Arrays.toString(fixIntByte));
-            System.out.println(Arrays.toString(byteBuffer.array()));
+            byte[] payloadByte=new byte[paylodLength];
+            byteBuffer.get(payloadByte, 0, paylodLength);
+            //System.out.println(Arrays.toString(byteBuffer.array()));
+            System.out.println(Arrays.toString(payloadByte));
+            HandShake handShake=new HandShake();
+            handShake.setPayloadLength(paylodLength);
+            handShake.setPayload(payloadByte);
         } else if (key.isWritable()) {
 
         }

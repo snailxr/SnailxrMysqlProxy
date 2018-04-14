@@ -3,10 +3,11 @@ package org.snailxr.snailxrproxy.protocol;
 /**
  * Created by snailxr on 2018/4/13.
  */
-public class Packet {
+public abstract class Packet {
     private int payloadLength;
     private int sequenceId;
-    private String payload;
+    private byte[] payload;
+    private int offset=0;
 
     public int getPayloadLength() {
         return payloadLength;
@@ -24,11 +25,13 @@ public class Packet {
         this.sequenceId = sequenceId;
     }
 
-    public String getPayload() {
+    public byte[] getPayload() {
         return payload;
     }
 
-    public void setPayload(String payload) {
+    public void setPayload(byte[] payload) {
         this.payload = payload;
     }
+
+    protected abstract void parsePayload();
 }
