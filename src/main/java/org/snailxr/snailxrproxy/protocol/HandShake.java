@@ -32,9 +32,8 @@ public class HandShake extends Packet{
      string[NUL]    auth-plugin name
      }
      */
-    @Override
-    protected void parsePayload() {
 
 
-    }
+
+
 }
